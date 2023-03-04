@@ -173,8 +173,20 @@ module.exports.printStatement = async (req, res) => {
       },
     ]);
     res.status(200).json(statement);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json("error ");
+  } catch (err) {
+    
+    res.status(500).json("Internal Server Error");
   }
 };
+
+module.exports.closeAccount = async(req, res) => {
+  const {id} = req.params
+  try {
+    await transactionData.deleteMany({senderId:id})
+    await transactionData.deleteMany({recieverId:id})
+    await userData.findByIdAndDelete(id)
+    res.status(200).json('Account successfully removed')
+  } catch (err) {
+    res.status(500).json("Internal Server Error");
+  }
+}
